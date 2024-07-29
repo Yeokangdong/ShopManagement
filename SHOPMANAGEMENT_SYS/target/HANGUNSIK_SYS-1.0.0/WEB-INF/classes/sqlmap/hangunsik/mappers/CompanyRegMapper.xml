@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hangunsik.service.impl.CompanyRegMapper">
+
+	<resultMap id="companyRegMap" type="kr.co.hangunsik.vo.CompanyRegVO">
+		<result property="company_no" column="company_no"/>
+		<result property="company_nm" column="company_nm"/>
+		<result property="company_type" column="company_type"/>
+		<result property="ceo_nm" column="ceo_nm"/>
+		<result property="business_tax" column="business_tax"/>
+		<result property="business_no" column="business_no"/>
+		<result property="telephone" column="telephone"/>
+		<result property="email" column="email"/>
+		<result property="address" column="address"/>
+		<result property="bank_nm" column="bank_nm"/>
+		<result property="bank_no" column="bank_no"/>
+		<result property="bank_nm" column="bank_nm"/>
+		<result property="bank_account_holder" column="bank_account_holder"/>
+		<result property="bank_deposit" column="bank_deposit"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 업체 번호 있는지 -->
+	<select id="getCompanyNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO
+			FROM	COMPANY A
+			ORDER BY A.COMPANY_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 업체 등록 -->
+	<insert id="setCompanyReg" parameterType="companyRegVo">
+		<![CDATA[
+			INSERT INTO COMPANY ( COMPANY_NO,COMPANY_TYPE,COMPANY_NM,CEO_NM,BUSINESS_TAX,BUSINESS_NO,TELEPHONE,EMAIL,ADDRESS,BANK_NM,BANK_NO,BANK_ACCOUNT_HOLDER,BANK_DEPOSIT,MODIFY_DT,CREATE_DT )
+			VALUES ( #{company_no},#{company_type},#{company_nm},#{ceo_nm},#{business_tax},#{business_no},#{telephone},#{email},#{address},#{bank_nm},#{bank_no},#{bank_account_holder},#{bank_deposit},now(),now()  )
+		]]>	
+	</insert>
+	
+	<!-- 업체 조회 있는지 -->
+	<select id="getCompanyList" resultMap="companyRegMap" parameterType="String">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO, A.COMPANY_TYPE, A.COMPANY_NM, A.CEO_NM, A.BUSINESS_TAX, A.BUSINESS_NO, A.TELEPHONE, A.EMAIL,
+	       			A.ADDRESS, A.BANK_NM, A.BANK_NO, A.BANK_ACCOUNT_HOLDER, A.BANK_DEPOSIT, A.MODIFY_DT, A.CREATE_DT
+			FROM	COMPANY A
+			]]>
+			<where>
+				<if test="search_type != '0'">
+					<if test="search_type == '1'">
+						A.COMPANY_NM = #{search_txt}
+					</if>
+					<if test="search_type == '2'">
+						A.COMPANY_NO = #{search_txt}
+					</if>
+					<if test="search_type == '3'">
+						A.CEO_NM = #{search_txt}
+					</if>
+					<if test="search_type == '4'">
+						A.BUSINESS_NO = #{search_txt}
+					</if>
+				</if>
+				<if test="company_type != '0'">
+					<if test="company_type == '2'">
+						A.COMPANY_TYPE = '1'
+					</if>
+					<if test="company_type == '3'">
+						A.COMPANY_TYPE = '2'
+					</if>
+				</if>
+			</where>		
+			ORDER BY A.COMPANY_NO DESC
+	</select>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.OrderCancelMapper">
+
+	<resultMap id="orderCancelMap" type="kr.co.shop.vo.OrderCancelVO">
+		<result property="order_no" column="order_no"/>
+		<result property="product_no" column="product_no"/>
+		<result property="option_no" column="option_no"/>
+		<result property="receive_nm" column="receive_nm"/>
+		<result property="receive_tel" column="receive_tel"/>
+		<result property="receive_tel_etc" column="receive_tel_etc"/>
+		<result property="receive_address" column="receive_address"/>
+		<result property="send_nm" column="send_nm"/>
+		<result property="send_tel" column="send_tel"/>
+		<result property="send_tel_etc" column="send_tel_etc"/>
+		<result property="send_address" column="send_address"/>
+		<result property="product_title" column="product_title"/>
+		<result property="box_cnt" column="box_cnt"/>
+		<result property="date_chk" column="date_chk"/>
+		<result property="first_dt" column="first_dt"/>
+		<result property="end_dt" column="end_dt"/>
+		<result property="start_num" column="start_num"/>
+		<result property="total_cnt" column="total_cnt"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 주문 총갯수 -->
+	<select id="getOrderCancelTotalCnt" resultMap="orderCancelMap">
+		<![CDATA[
+			SELECT 	COUNT(A.ORDER_NO) AS TOTAL_CNT
+			FROM	ORDER_CANCEL A
+		]]>
+	</select>
+		
+	<!-- 주문 조회 -->
+	<select id="getOrderCancelList" resultMap="orderCancelMap" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT 	A.ORDER_NO, A.PRODUCT_NO, A.OPTION_NO, A.RECEIVE_NM, A.RECEIVE_TEL, A.RECEIVE_TEL_ETC, A.RECEIVE_ADDRESS,
+					A.SEND_NM, A.SEND_TEL, A.SEND_TEL_ETC, A.SEND_ADDRESS, A.PRODUCT_TITLE, A.BOX_CNT, A.MESSAGE, A.MODIFY_DT, A.CREATE_DT
+			FROM	ORDER_CANCEL A
+		]]>
+		<where>
+			<if test="order_no != null">
+				A.ORDER_NO = #{order_no}
+			</if>
+			<if test="search_txt != ''">
+				<if test='search_type.equals("1")'>
+					AND A.ORDER_NO LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("2")'>
+					AND A.PRODUCT_TITLE LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("3")'>
+					AND A.CREATE_DT LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("4")'>
+					AND A.RECEIVE_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("5")'>
+					AND A.SEND_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+			</if>
+			<if test='date_chk.equals("Y")'>
+				A.CREATE_DT BETWEEN #{first_dt} AND #{end_dt}
+			</if>
+		</where>
+		<if test="start_num != undefined">
+			ORDER BY A.ORDER_NO LIMIT ${start_num}, 10
+		</if>	
+	</select>
+
+	<!-- 주문 삭제 -->
+	<delete id="setOrderCancelDelete" parameterType="java.util.Map">
+		<![CDATA[
+			DELETE	
+			FROM	ORDER_CANCEL
+		]]>	
+		<where>
+			<if test="order_no != null">
+				ORDER_NO = #{order_no}
+			</if>
+		</where>
+	</delete>
+</mapper>

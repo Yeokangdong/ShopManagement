@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.OrderCompleteMapper">
+
+	<resultMap id="orderCompleteMap" type="kr.co.shop.vo.OrderCompleteVO">
+		<result property="order_no" column="order_no"/>
+		<result property="product_no" column="product_no"/>
+		<result property="option_no" column="option_no"/>
+		<result property="receive_nm" column="receive_nm"/>
+		<result property="receive_tel" column="receive_tel"/>
+		<result property="receive_tel_etc" column="receive_tel_etc"/>
+		<result property="receive_address" column="receive_address"/>
+		<result property="send_nm" column="send_nm"/>
+		<result property="send_tel" column="send_tel"/>
+		<result property="send_tel_etc" column="send_tel_etc"/>
+		<result property="send_address" column="send_address"/>
+		<result property="product_title" column="product_title"/>
+		<result property="box_cnt" column="box_cnt"/>
+		<result property="songjang_no" column="songjang_no"/>
+		<result property="status_time" column="status_time"/>
+		<result property="status_loc" column="status_loc"/>
+		<result property="status" column="status"/>
+		<result property="date_chk" column="date_chk"/>
+		<result property="first_dt" column="first_dt"/>
+		<result property="end_dt" column="end_dt"/>
+		<result property="total_cnt" column="total_cnt"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 주문 번호 있는지 -->
+	<select id="getOrderCompleteNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.ORDER_NO
+			FROM	ORDER_COMPLETE A
+			ORDER BY A.ORDER_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 주문 등록 -->
+	<insert id="setOrderCompleteReg" parameterType="orderCompleteVo">
+		<![CDATA[
+			INSERT INTO ORDER_Complete ( ORDER_NO,PRODUCT_NO,OPTION_NO,RECEIVE_NM,RECEIVE_TEL,RECEIVE_TEL_ETC,RECEIVE_ADDRESS,SEND_NM,SEND_TEL,SEND_TEL_ETC,SEND_ADDRESS,PRODUCT_TITLE,BOX_CNT,MESSAGE,SONGJANG_NO,STATUS_TIME,STATUS,MODIFY_DT,CREATE_DT )
+			VALUES ( #{order_no},#{product_no},#{option_no},#{receive_nm},#{receive_tel},#{receive_tel_etc},#{receive_address},#{send_nm},#{send_tel},#{send_tel_etc},#{send_address},#{product_title},#{box_cnt},#{message},#{songjang_no},NOW(),#{status},now(),now()  )
+		]]>	
+	</insert>
+	
+	<!-- 주문 총갯수 -->
+	<select id="getOrderCompleteTotalCnt" resultMap="orderCompleteMap">
+		<![CDATA[
+			SELECT 	COUNT(A.ORDER_NO) AS TOTAL_CNT
+			FROM	ORDER_COMPLETE A
+		]]>
+	</select>
+	
+	<!-- 주문 목록 -->
+	<select id="getOrderCompleteList" resultMap="orderCompleteMap" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT 	A.ORDER_NO, A.PRODUCT_NO, A.OPTION_NO, A.RECEIVE_NM, A.RECEIVE_TEL, A.RECEIVE_TEL_ETC, A.RECEIVE_ADDRESS,
+					A.SEND_NM, A.SEND_TEL, A.SEND_TEL_ETC, A.SEND_ADDRESS, A.PRODUCT_TITLE, A.BOX_CNT, A.MESSAGE, A.SONGJANG_NO, 
+					A.SELL_STORE, A.STATUS_TIME, A.STATUS_LOC, A.STATUS, A.MODIFY_DT, A.CREATE_DT
+			FROM	ORDER_COMPLETE A
+		]]>
+		<where>
+			<if test="order_no != null">
+				A.ORDER_NO = #{order_no}
+			</if>
+			<if test="search_txt != ''">
+				<if test='search_type.equals("1")'>
+					AND A.ORDER_NO LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("2")'>
+					AND A.SONGJANG_NO LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("3")'>
+					AND A.PRODUCT_TITLE LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("4")'>
+					AND A.CREATE_DT LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("5")'>
+					AND A.RECEIVE_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("6")'>
+					AND A.SEND_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+			</if>
+			<if test='date_chk.equals("Y")'>
+				A.CREATE_DT BETWEEN #{first_dt} AND #{end_dt}
+			</if>
+		</where>
+		ORDER BY A.ORDER_NO LIMIT ${start_num}, 10	
+	</select>
+
+	<!-- 주문 삭제 -->
+	<delete id="setOrderCompleteDelete" parameterType="java.util.Map">
+		<![CDATA[
+			DELETE	
+			FROM	ORDER_COMPLETE
+		]]>	
+		<where>
+			<if test="order_no != null">
+				ORDER_NO = #{order_no}
+			</if>
+		</where>
+	</delete>
+</mapper>

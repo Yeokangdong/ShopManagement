@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hangunsik.service.impl.UsersMapper">
+
+	<resultMap id="usersMap" type="kr.co.hangunsik.vo.UsersVO">
+		<result property="user_id" column="user_id"/>
+		<result property="user_password" column="user_password"/>
+		<result property="user_nm" column="user_nm"/>
+		<result property="email" column="email"/>
+		<result property="phone_number" column="phone_number"/>
+		<result property="admin_yn" column="admin_yn"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<select id="getUsersList" resultMap="usersMap">
+		SELECT 	USER_ID, USER_PASSWORD, ADMIN_YN, EMAIL, PHONE_NUMBER, CREATE_DT
+		FROM	USERS A
+		WHERE	A.USER_ID = #{user_id}
+		AND		A.USER_PASSWORD = #{user_password}		
+	</select>
+</mapper>

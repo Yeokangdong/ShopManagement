@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.ProductMapper">
+
+	<resultMap id="productMap" type="kr.co.shop.vo.ProductVO">
+		<result property="product_no" column="product_no"/>
+		<result property="category_no" column="category_no"/>
+		<result property="item_no" column="item_no"/>
+		<result property="store_no" column="store_no"/>
+		<result property="courier_no" column="courier_no"/>
+		<result property="tax" column="tax"/>
+		<result property="brand_title" column="brand_title"/>
+	</resultMap>
+	
+	<!-- 상품 번호 있는지 -->
+	<select id="getProductNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.PRODUCT_NO
+			FROM	PRODUCT A
+			ORDER BY A.PRODUCT_NO DESC LIMIT 1
+		]]>			
+	</select>
+	
+	<!-- 최근 등록한 상품 -->
+	<select id="getLastProductList" resultMap="productMap">
+		<![CDATA[
+			SELECT 	A.PRODUCT_NO, A.BRAND_TITLE
+			FROM	PRODUCT A
+			ORDER BY A.PRODUCT_NO DESC LIMIT 3
+		]]>			
+	</select>
+
+	<!-- 상품 등록 -->
+	<insert id="setProductReg" parameterType="productVO">
+		<![CDATA[
+			INSERT INTO PRODUCT( PRODUCT_NO,CATEGORY_NO,ITEM_NO,STORE_NO,COURIER_NO,TAX,BRAND_TITLE,MODIFY_DT,CREATE_DT )
+			VALUES( #{product_no},#{category_no},#{item_no},#{store_no},#{courier_no},#{tax},#{brand_title},now(),now()  )
+		]]>	
+	</insert>
+</mapper>

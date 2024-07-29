@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.EmployeeMapper">
+
+	<resultMap id="employeeMap" type="kr.co.shop.vo.EmployeeVO">
+		<result property="employee_no" column="employee_no"/>
+		<result property="company_no" column="company_no"/>
+		<result property="employee_nm" column="employee_nm"/>
+		<result property="charge" column="charge"/>
+		<result property="telephone" column="telephone"/>
+		<result property="email" column="email"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 직원 번호 있는지 -->
+	<select id="getEmployeeNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.EMPLOYEE_NO
+			FROM	EMPLOYEE A
+			ORDER BY A.EMPLOYEE_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 직원 등록 -->
+	<insert id="setEmployeeReg" parameterType="employeeVO">
+		<![CDATA[
+			INSERT INTO EMPLOYEE( EMPLOYEE_NO,COMPANY_NO,EMPLOYEE_NM,CHARGE,TELEPHONE,EMAIL,MODIFY_DT,CREATE_DT )
+			VALUES( #{employee_no},#{company_no},#{employee_nm},#{charge},#{telephone},#{email},now(),now()  )
+		]]>	
+	</insert>
+
+	<!-- 직원 수정 -->
+	<update id="setEmployeeModify" parameterType="employeeVO">
+		<![CDATA[
+			UPDATE 	EMPLOYEE
+			SET 	EMPLOYEE_NM = #{employee_nm}, CHARGE = #{charge}, TELEPHONE = #{telephone}, EMAIL = #{email}, MODIFY_DT = now() 
+			WHERE 	EMPLOYEE_NO = #{employee_no}
+		]]>	
+	</update>
+
+	<!-- 직원 삭제 -->
+	<delete id="setEmployeeDelete" parameterType="employeeVO">
+		<![CDATA[
+			DELETE
+			FROM 	EMPLOYEE
+			WHERE 	EMPLOYEE_NO = #{employee_no}
+		]]>	
+	</delete>
+	
+	<!-- 직원 조회 -->
+	<select id="getEmployeeList" resultMap="employeeMap">
+		<![CDATA[
+			SELECT 	A.EMPLOYEE_NO, A.COMPANY_NO, A.EMPLOYEE_NM, A.CHARGE, A.TELEPHONE, A.EMAIL, A.MODIFY_DT, A.CREATE_DT
+  			FROM 	EMPLOYEE A
+  			WHERE 	A.COMPANY_NO = #{company_no}
+			ORDER BY A.EMPLOYEE_NO DESC
+		]]>		
+	</select>
+	
+	<!-- 직원 정보 -->
+	<select id="getEmployeeInfo" resultMap="employeeMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.EMPLOYEE_NO, A.COMPANY_NO, A.EMPLOYEE_NM, A.CHARGE, A.TELEPHONE, A.EMAIL, A.MODIFY_DT, A.CREATE_DT
+			FROM	EMPLOYEE A
+			WHERE	A.EMPLOYEE_NO = #{employee_no}
+			ORDER BY A.EMPLOYEE_NO DESC
+		]]>	
+	</select>
+
+</mapper>

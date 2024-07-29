@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.EmailMapper">
+
+	<resultMap id="emailMap" type="kr.co.shop.vo.EmailVO">
+		<result property="email_title" column="email_title"/>
+		<result property="email_content" column="email_content"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<!-- 직원 등록 -->
+	<insert id="setEmailReg" parameterType="emailVO">
+		<![CDATA[
+			INSERT INTO SEND_EMAIL( EMAIL_TITLE, EMAIL_CONTENT, MODIFY_DT, CREATE_DT )
+			VALUES( #{email_title},#{email_content},now(),now()  )
+		]]>	
+	</insert>
+	
+	<!-- 이메일 정보 -->
+	<select id="getOrderEmailInfo" resultMap="emailMap">
+		<![CDATA[
+			SELECT 	A.EMAIL_TITLE, A.EMAIL_CONTENT, A.MODIFY_DT, A.CREATE_DT
+  			FROM 	SEND_EMAIL A
+  			ORDER BY A.CREATE_DT
+		]]>		
+	</select>
+
+</mapper>
