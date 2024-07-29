@@ -15,27 +15,15 @@
  */
 package kr.co.shop.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
-import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
-
 import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import kr.co.shop.service.CompanyService;
 import kr.co.shop.service.OrderHisService;
-import kr.co.shop.service.OrderService;
-import kr.co.shop.service.LoginService;
-import kr.co.shop.vo.CompanyVO;
 import kr.co.shop.vo.OrderHisVO;
-import kr.co.shop.vo.OrderVO;
-import kr.co.shop.vo.LoginVO;
 
 /**
  * @Class Name : EgovSampleServiceImpl.java

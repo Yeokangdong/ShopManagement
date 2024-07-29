@@ -2,12 +2,8 @@ package kr.co.shop.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.egovframe.rte.psl.dataaccess.mapper.Mapper;
-
-import kr.co.shop.vo.CompanyVO;
 import kr.co.shop.vo.CustomerDBVO;
-import kr.co.shop.vo.OrderVO;
 
 @Mapper("customerDBMapper")
 public interface CustomerDBMapper {
