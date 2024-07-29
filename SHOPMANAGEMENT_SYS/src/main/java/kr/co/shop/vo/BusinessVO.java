@@ -7,7 +7,7 @@ public class BusinessVO {
     private String address;
     private String customer_center;
     private String modify_dt;
-    private String create_dt;
+    private String create_dt; 
     
 	public String getBusiness_no() {
 		return business_no;
