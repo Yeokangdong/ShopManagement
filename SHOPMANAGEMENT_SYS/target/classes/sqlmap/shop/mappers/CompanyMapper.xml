@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.CompanyMapper">
+
+	<resultMap id="companyMap" type="kr.co.shop.vo.CompanyVO">
+		<result property="company_no" column="company_no"/>
+		<result property="company_nm" column="company_nm"/>
+		<result property="company_type" column="company_type"/>
+		<result property="ceo_nm" column="ceo_nm"/>
+		<result property="business_tax" column="business_tax"/>
+		<result property="business_no" column="business_no"/>
+		<result property="telephone" column="telephone"/>
+		<result property="email" column="email"/>
+		<result property="address" column="address"/>
+		<result property="bank_nm" column="bank_nm"/>
+		<result property="bank_no" column="bank_no"/>
+		<result property="bank_nm" column="bank_nm"/>
+		<result property="bank_account_holder" column="bank_account_holder"/>
+		<result property="bank_deposit" column="bank_deposit"/>
+		<result property="start_num" column="start_num"/>
+		<result property="total_cnt" column="total_cnt"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<resultMap id="companyFileMap" type="kr.co.shop.vo.CompanyFileVO">
+		<result property="file_no" column="file_no"/>
+		<result property="company_no" column="company_no"/>
+		<result property="file_type" column="file_type"/>
+		<result property="file_nm" column="file_nm"/>
+		<result property="file_path" column="file_path"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>	
+	
+	<!-- 업체 번호 있는지 -->
+	<select id="getCompanyNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO
+			FROM	COMPANY A
+			ORDER BY A.COMPANY_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 업체 등록 -->
+	<insert id="setCompanyReg" parameterType="companyVo">
+		<![CDATA[
+			INSERT INTO COMPANY ( COMPANY_NO, COMPANY_TYPE, COMPANY_NM, CEO_NM, BUSINESS_TAX, BUSINESS_NO, TELEPHONE, EMAIL, ADDRESS, BANK_NM, BANK_NO, BANK_ACCOUNT_HOLDER, BANK_DEPOSIT, MODIFY_DT, CREATE_DT )
+			VALUES ( #{company_no},#{company_type},#{company_nm},#{ceo_nm},#{business_tax},#{business_no},#{telephone},#{email},#{address},#{bank_nm},#{bank_no},#{bank_account_holder},#{bank_deposit},now(),now()  )
+		]]>	
+	</insert>
+
+	<!-- 업체 수정 -->
+	<update id="setCompanyModify" parameterType="companyVo">
+		<![CDATA[
+			UPDATE 	COMPANY
+			SET 	COMPANY_TYPE = #{company_type}, COMPANY_NM = #{company_nm}, CEO_NM = #{ceo_nm}, BUSINESS_TAX = #{business_tax}, 
+					BUSINESS_NO = #{business_no}, TELEPHONE = #{telephone}, EMAIL = #{email}, ADDRESS = #{address}, BANK_NM = #{bank_nm}, BANK_NO = #{bank_no}, 
+					BANK_ACCOUNT_HOLDER = #{bank_account_holder}, BANK_DEPOSIT = #{bank_deposit}, MODIFY_DT = now() 
+			WHERE 	COMPANY_NO = #{company_no}
+		]]>	
+	</update>
+
+	<!-- 업체 삭제 -->
+	<delete id="setCompanyDelete" parameterType="companyVo">
+		<![CDATA[
+			DELETE
+			FROM 	COMPANY
+			WHERE 	COMPANY_NO = #{company_no}
+		]]>	
+	</delete>
+	
+	<!-- 업체명 조회 -->
+	<select id="getCompanyNoList" resultMap="companyMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO, A.COMPANY_NM
+			FROM	COMPANY A
+			ORDER BY A.COMPANY_NO
+		]]>
+	</select>
+	
+	<!-- 업체명 총갯수 -->
+	<select id="getCompanyTotalCnt" resultMap="companyMap">
+		<![CDATA[
+			SELECT 	COUNT(A.COMPANY_NO) AS TOTAL_CNT
+			FROM	COMPANY A
+		]]>
+	</select>
+	
+	<!-- 업체 조회 -->
+	<select id="getCompanyList" resultMap="companyMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO, A.COMPANY_TYPE, A.COMPANY_NM, A.CEO_NM, A.BUSINESS_TAX, A.BUSINESS_NO, A.TELEPHONE, A.EMAIL,
+	       			A.ADDRESS, A.BANK_NM, A.BANK_NO, A.BANK_ACCOUNT_HOLDER, A.BANK_DEPOSIT, A.MODIFY_DT, A.CREATE_DT
+			FROM	COMPANY A
+		]]>
+		<where>
+			<if test="search_txt != ''">
+				<if test="search_type == 1">
+					AND A.COMPANY_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test="search_type == 2">
+					AND A.COMPANY_NO LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test="search_type == 3">
+					AND A.CEO_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test="search_type == 4">
+					AND A.BUSINESS_NO LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+			</if>
+			<if test="company_type != 0">
+				<if test="company_type == 1">
+					AND A.COMPANY_TYPE = '1'
+				</if>
+				<if test="company_type == 2">
+					AND A.COMPANY_TYPE = '2'
+				</if>
+			</if>
+		</where>		
+		ORDER BY A.COMPANY_NO
+	</select>
+	
+	<!-- 업체 정보 -->
+	<select id="getCompanyInfo" resultMap="companyMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO, A.COMPANY_TYPE, A.COMPANY_NM, A.CEO_NM, A.BUSINESS_TAX, A.BUSINESS_NO, A.TELEPHONE, A.EMAIL,
+	       			A.ADDRESS, A.BANK_NM, A.BANK_NO, A.BANK_ACCOUNT_HOLDER, A.BANK_DEPOSIT, A.MODIFY_DT, A.CREATE_DT
+			FROM	COMPANY A
+			WHERE	A.COMPANY_NO = #{company_no}
+			ORDER BY A.COMPANY_NO
+		]]>	
+	</select>
+	
+	<!-- 업체 파일 목록 -->
+	<select id="getCompanyFileList" resultMap="companyFileMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.FILE_NO, A.COMPANY_NO, A.FILE_TYPE, A.FILE_NM, A.FILE_PATH, A.CREATE_DT
+  			FROM	COMPANY_FILES A
+			WHERE	A.COMPANY_NO = #{company_no}
+			ORDER BY A.FILE_NO DESC
+		]]>	
+	</select>
+	
+	<!-- 사업자등록증 기본키 정보 -->
+	<select id="getCompanyFileNo" resultType="String" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.FILE_NO
+			FROM	COMPANY_FILES A
+			ORDER BY A.FILE_NO DESC LIMIT 1
+		]]>	
+	</select>
+
+	<!-- 업체 파일 등록 -->
+	<insert id="setCompanyFilesReg" parameterType="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO COMPANY_FILES( FILE_NO,COMPANY_NO,FILE_TYPE,FILE_NM,FILE_PATH,CREATE_DT )
+			VALUES ( #{file_no}, #{company_no}, #{file_type}, #{file_nm}, #{file_path},now()  )
+		]]>	
+	</insert>
+	
+	<!-- 업체 엑셀 다운로드 -->
+	<select id="getCompanyFileDownload" resultMap="companyMap">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO, A.COMPANY_TYPE, A.COMPANY_NM, A.CEO_NM, A.BUSINESS_TAX, A.BUSINESS_NO, A.TELEPHONE, A.EMAIL,
+	       			A.ADDRESS, A.BANK_NM, A.BANK_NO, A.BANK_ACCOUNT_HOLDER, A.BANK_DEPOSIT, A.MODIFY_DT, A.CREATE_DT
+			FROM	COMPANY A
+			ORDER BY A.COMPANY_NO
+		]]>	
+	</select>
+</mapper>

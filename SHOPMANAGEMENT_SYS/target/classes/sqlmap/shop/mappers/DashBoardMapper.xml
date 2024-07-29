@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.DashBoardMapper">
+
+	<resultMap id="dashboardMap" type="kr.co.shop.vo.DashBoardVO">
+		<result property="new_order_cnt" column="new_order_cnt"/>
+		<result property="ready_delivery_cnt" column="ready_delivery_cnt"/>
+		<result property="delivery_cnt" column="delivery_cnt"/>
+		<result property="delivery_complete_cnt" column="delivery_complete_cnt"/>
+		<result property="order_cancel_cnt" column="order_cancel_cnt"/>
+		<result property="order_customerdb_cnt" column="order_customerdb_cnt"/>
+		<result property="make_company_cnt" column="make_company_cnt"/>
+		<result property="outsourcing_company_cnt" column="outsourcing_company_cnt"/>
+	</resultMap>
+	
+	<!-- 신규 주문 -->
+	<select id="getNewOrderCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS NEW_ORDER_CNT
+			FROM	HANGUNSIK_SYS.ORDER A
+		]]>
+	</select>
+	
+	<!-- 배송 준비 -->
+	<select id="getReadyDeliveryCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS READY_DELIVERY_CNT
+		  	FROM 	ORDER_HIS A
+		  	WHERE	A.STATUS = '발송대기'
+		]]>
+	</select>
+	
+	<!-- 배송중 -->
+	<select id="getDeliveryCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS DELIVERY_CNT
+		  	FROM 	ORDER_HIS A
+		  	WHERE	A.STATUS != '발송대기'
+		]]>
+	</select>
+	
+	<!-- 배송완료 -->
+	<select id="getDeliveryCompleteCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS DELIVERY_COMPLETE_CNT
+		  	FROM 	ORDER_COMPLETE A
+		]]>
+	</select>
+	
+	<!-- 취소 -->
+	<select id="getOrderCancelCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS ORDER_CANCEL_CNT
+		  	FROM 	ORDER_CANCEL A
+		]]>
+	</select>
+	
+	<!-- 제조 -->
+	<select id="getMakeCompanyCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS MAKE_COMPANY_CNT
+		  	FROM 	COMPANY A
+		  	WHERE	A.COMPANY_TYPE = '1'
+		]]>
+	</select>
+	
+	<!-- 외주 -->
+	<select id="getOutsourcingCompanyCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS OUTSOURCING_COMPANY_CNT
+		  	FROM 	COMPANY A
+		  	WHERE	A.COMPANY_TYPE = '2'
+		]]>
+	</select>
+	
+	<!-- 고객 -->
+	<select id="getCustomerDBCnt" resultMap="dashboardMap">
+		<![CDATA[
+			SELECT 	COUNT(*) AS ORDER_CUSTOMERDB_CNT
+		  	FROM 	CUSTOMERDB A
+		]]>
+	</select>
+</mapper>

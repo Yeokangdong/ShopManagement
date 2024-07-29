@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+		<typeAlias alias="dashboardVo" type="kr.co.shop.vo.DashBoardVO"/>
+		<typeAlias alias="emailVo" type="kr.co.shop.vo.EmailVO"/>
+		<typeAlias alias="companyVo" type="kr.co.shop.vo.CompanyVO"/>
+		<typeAlias alias="employeeVo" type="kr.co.shop.vo.EmployeeVO"/>
+		<typeAlias alias="productVo" type="kr.co.shop.vo.ProductVO"/>
+		<typeAlias alias="orderVo" type="kr.co.shop.vo.OrderVO"/>
+		<typeAlias alias="orderHisVo" type="kr.co.shop.vo.OrderHisVO"/>
+		<typeAlias alias="orderCompleteVo" type="kr.co.shop.vo.OrderCompleteVO"/>
+		<typeAlias alias="orderCancelVo" type="kr.co.shop.vo.OrderCancelVO"/>
+		<typeAlias alias="customerDBVo" type="kr.co.shop.vo.CustomerDBVO"/>
+		<typeAlias alias="categoryVo" type="kr.co.shop.vo.CategoryVO"/>
+		<typeAlias alias="itemVo" type="kr.co.shop.vo.ItemVO"/>
+		<typeAlias alias="deliveryTrackingVO" type="kr.co.shop.vo.DeliveryTrackingVO"/>
+		<typeAlias alias="sellStoreVo" type="kr.co.shop.vo.SellStoreVO"/>
+		<typeAlias alias="systemVO" type="kr.co.shop.vo.SystemVO"/>
+		<typeAlias alias="businessVo" type="kr.co.shop.vo.BusinessVO"/>
+		<typeAlias alias="courierCompanyVo" type="kr.co.shop.vo.CourierCompanyVO"/>
+		<typeAlias alias="loginVo" type="kr.co.shop.vo.LoginVO"/>
+    </typeAliases>
+</configuration>

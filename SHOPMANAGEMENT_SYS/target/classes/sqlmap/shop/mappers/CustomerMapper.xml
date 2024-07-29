@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.CustomerDBMapper">
+
+	<resultMap id="customerDBMap" type="kr.co.shop.vo.CustomerDBVO">
+		<result property="customer_no" column="customer_no"/>
+		<result property="product_no" column="product_no"/>
+		<result property="customer_nm" column="customer_nm"/>
+		<result property="telephone" column="telephone"/>
+		<result property="totalOrderAmount" column="totalOrderAmount"/>
+		<result property="last_order_dt" column="last_order_dt"/>
+		<result property="order_cnt" column="order_cnt"/>
+		<result property="rank" column="rank"/>
+		<result property="start_num" column="start_num"/>
+		<result property="total_cnt" column="total_cnt"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 고객 번호 있는지 -->
+	<select id="getCustomerDBNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.CUSTOMER_NO
+			FROM	CUSTOMERDB A
+			ORDER BY A.CUSTOMER_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 고객 등록 -->
+	<insert id="setCustomerDBReg" parameterType="customerDBVo">
+		<![CDATA[
+			INSERT INTO CUSTOMERDB ( CUSTOMER_NO, ORDER_NO, PRODUCT_NO, CUSTOMER_NM, TELEPHONE, MODIFY_DT, CREATE_DT )
+			VALUES ( #{customer_no},#{order_no},#{product_no},#{customer_nm},#{telephone},now(),now()  )
+		]]>	
+	</insert>
+	
+	<!-- 고객 총원 -->
+	<select id="getCustomerDBTotalCnt" resultMap="customerDBMap">
+		<![CDATA[
+			SELECT 	COUNT(A.CUSTOMER_NO) AS TOTAL_CNT
+			FROM	CUSTOMERDB A
+		]]>
+	</select>
+	
+	<!-- 고객 목록 -->
+	<select id="getCustomerDBList" resultMap="customerDBMap" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT 	A.CUSTOMER_NO, A.PRODUCT_NO, A.CUSTOMER_NM, A.TELEPHONE, COUNT(A.CUSTOMER_NM) AS ORDER_CNT, 
+					(SELECT MAX(CREATE_DT) FROM CUSTOMERDB) AS LAST_ORDER_DT, A.MODIFY_DT, A.CREATE_DT
+			FROM	CUSTOMERDB A
+		]]>
+		<where>
+			<if test="search_txt != ''">
+				<if test="search_type == 1">
+					AND A.CUSTOMER_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test="search_type == 2">
+					AND A.TELEPHONE LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+			</if>	
+		</where>
+		GROUP BY A.CUSTOMER_NM
+		<if test="rank_type != 1">
+			<if test='search_type.equals("2")'>
+				HAVING COUNT(A.CUSTOMER_NM) > 10
+			</if>
+			<if test='search_type.equals("3")'>
+				HAVING COUNT(A.CUSTOMER_NM) > 5
+			</if>
+			<if test='search_type.equals("4")'>
+				HAVING COUNT(A.CUSTOMER_NM) > 1
+			</if>
+			<if test='search_type.equals("5")'>
+				HAVING COUNT(A.CUSTOMER_NM) = 1
+			</if>
+		</if>
+		ORDER BY A.ORDER_NO LIMIT ${start_num}, 10
+	</select>
+	
+	<!-- 고객 정보 -->
+	<select id="getCustomerDBInfo" resultMap="customerDBMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.CUSTOMER_NO, A.PRODUCT_NO, A.CUSTOMER_NM, A.TELEPHONE, COUNT(A.CUSTOMER_NM) AS ORDER_CNT, 
+					(SELECT MAX(CREATE_DT) FROM CUSTOMERDB) AS LAST_ORDER_DT, A.MODIFY_DT, A.CREATE_DT
+			FROM	CUSTOMERDB A
+			WHERE	A.CUSTOMER_NM = #{customer_nm}
+			GROUP BY A.CUSTOMER_NM
+		]]>	
+	</select>
+	
+	<!-- 품목 차트 -->
+	<select id="getCustomerDBProductChart" resultMap="customerDBMap">
+		<![CDATA[
+			SELECT 	A.CUSTOMER_NO, A.PRODUCT_NO, A.CUSTOMER_NM, A.TELEPHONE, COUNT(A.CUSTOMER_NM) AS ORDER_CNT, 
+					(SELECT MAX(CREATE_DT) FROM CUSTOMERDB) AS LAST_ORDER_DT, A.MODIFY_DT, A.CREATE_DT
+			FROM	CUSTOMERDB A
+		]]>	
+	</select>
+	
+	<!-- 등급 차트 -->
+	<select id="getCustomerDBRankChart" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT 	CASE WHEN CNT = 1 THEN COUNT(CNT) ELSE 0 END AS 'rankFirst',
+			 		CASE WHEN CNT > 1 AND CNT <= 5 THEN COUNT(CNT) ELSE 0 END AS 'rankFamily',
+			 		CASE WHEN CNT > 5 AND CNT <= 10 THEN COUNT(CNT) ELSE 0 END AS 'rankVIP',
+			 		CASE WHEN CNT > 10 THEN COUNT(CNT) ELSE 0 END AS 'rankVVIP'
+			FROM	(SELECT 	A.CUSTOMER_NM, COUNT(A.CUSTOMER_NM) AS CNT
+					FROM	CUSTOMERDB A
+					GROUP BY A.CUSTOMER_NM) B
+			GROUP BY CNT	
+		]]>	
+	</select>
+	
+	<!-- 전체 고객수 차트 -->
+	<select id="getCustomerDBCntChart" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT	DATE_FORMAT(`CREATE_DT`, '%Y-%m') AS `date`, COUNT(*) AS `cnt`
+			FROM 	CUSTOMERDB
+			GROUP BY MONTH(`CREATE_DT`), YEAR(`CREATE_DT`)
+			ORDER BY `DATE` ASC;
+		]]>	
+	</select>
+</mapper>

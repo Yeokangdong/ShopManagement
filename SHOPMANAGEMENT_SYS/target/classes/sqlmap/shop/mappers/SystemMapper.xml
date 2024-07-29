@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.SystemMapper">
+
+	<resultMap id="loginMap" type="kr.co.shop.vo.LoginVO">
+		<result property="user_id" column="user_id"/>
+		<result property="user_password" column="user_password"/>
+		<result property="user_nm" column="user_nm"/>
+		<result property="email" column="email"/>
+		<result property="email_password" column="email_password"/>
+		<result property="phone_number" column="phone_number"/>
+		<result property="admin_yn" column="admin_yn"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<resultMap id="settingStatisticsMap" type="kr.co.shop.vo.SettingStatisticsVO">
+		<result property="company_cnt1" column="company_cnt1"/>
+		<result property="company_cnt2" column="company_cnt2"/>
+		<result property="customer_cnt" column="customer_cnt"/>
+	</resultMap>
+	
+	<resultMap id="systemMap" type="kr.co.shop.vo.SystemVO">
+		<result property="user_id" column="user_id"/>
+		<result property="logo" column="logo"/>
+		<result property="logo_img_change" column="logo_img_change"/>
+		<result property="system_nm" column="system_nm"/>
+		<result property="system_s_nm" column="system_s_nm"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<resultMap id="businessMap" type="kr.co.shop.vo.BusinessVO">
+		<result property="business_no" column="business_no"/>
+		<result property="tele_sell" column="tele_sell"/>
+		<result property="address" column="address"/>
+		<result property="customer_center" column="customer_center"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<resultMap id="categoryMap" type="kr.co.shop.vo.CategoryVO">
+		<result property="category_no" column="category_no"/>
+		<result property="category_nm" column="category_nm"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<resultMap id="itemMap" type="kr.co.shop.vo.ItemVO">
+		<result property="item_no" column="item_no"/>
+		<result property="category_no" column="category_no"/>
+		<result property="item_nm" column="item_nm"/>
+		<result property="category_nm" column="category_nm"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<resultMap id="sellStoreMap" type="kr.co.shop.vo.SellStoreVO">
+		<result property="store_no" column="store_no"/>
+		<result property="store_nm" column="store_nm"/>
+		<result property="charge" column="charge"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<resultMap id="courierCompanyMap" type="kr.co.shop.vo.CourierCompanyVO">
+		<result property="courier_no" column="courier_no"/>
+		<result property="courier_nm" column="courier_nm"/>
+		<result property="fare" column="fare"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 계정 수정 -->
+	<update id="setUserModify" parameterType="systemVo">
+		<![CDATA[
+			UPDATE 	USERS
+			SET 	USER_ID = #{user_id}, USER_PASSWORD = #{user_password}, MODIFY_DT = now()
+			WHERE 	USER_ID = #{user_id}
+		]]>	
+	</update>
+
+	<!-- 계정 정보 -->
+	<select id="getUserInfo" resultMap="loginMap">
+		<![CDATA[
+			SELECT 	USER_ID, USER_PASSWORD, ADMIN_YN, EMAIL, EMAIL_PASSWORD, PHONE_NUMBER, CREATE_DT
+			FROM	USERS A
+			WHERE	A.USER_ID = #{user_id}
+			AND		A.USER_PASSWORD = #{user_password}	
+		]]>		
+	</select>
+
+	<!-- 로고 통계 정보 -->
+	<select id="getSettingStatisticsList" resultMap="settingStatisticsMap">
+		<![CDATA[
+			SELECT	COMPANY_CNT1, COMPANY_CNT2, CUSTOMER_CNT
+			FROM	(SELECT COUNT(COMPANY_NO) AS COMPANY_CNT1
+					FROM  	COMPANY
+					WHERE	COMPANY_TYPE = '1') A,
+				  	(SELECT COUNT(COMPANY_NO) AS COMPANY_CNT2
+					FROM  	COMPANY
+					WHERE	COMPANY_TYPE = '2') B,
+					(SELECT COUNT(CUSTOMER_NO) AS CUSTOMER_CNT
+					FROM  	CUSTOMERDB) C
+		]]>		
+	</select>
+	
+	<!-- 로고 파일 업로드 -->
+	<update id="setLogoFilesReg" parameterType="java.util.HashMap">
+		<![CDATA[
+			UPDATE 	SYSTEM
+			SET 	LOGO = #{logo}, MODIFY_DT = now()
+		]]>	
+	</update>
+	
+	<!-- 시스템 수정 -->
+	<update id="setSystemModify" parameterType="systemVo">
+		<![CDATA[
+			UPDATE 	SYSTEM
+			SET 	LOGO_IMG_CHANGE = #{logo_img_change}, SYSTEM_NM = #{system_nm}, SYSTEM_S_NM = #{system_s_nm}, MODIFY_DT = now()
+		]]>	
+	</update>
+
+	<!-- 시스템 조회 -->
+	<select id="getSystemInfo" resultMap="systemMap">
+		<![CDATA[
+			SELECT 	LOGO, LOGO_IMG_CHANGE, SYSTEM_NM, SYSTEM_S_NM, MODIFY_DT, CREATE_DT
+			FROM	SYSTEM A
+		]]>	
+	</select>
+	
+	<!-- 사업자 수정 -->
+	<update id="setBusinessModify" parameterType="businessVo">
+		<![CDATA[
+			UPDATE 	BUSINESS_INFO
+			SET 	BUSINESS_NO = #{business_no}, TELE_SELL = #{tele_sell}, ADDRESS = #{address}, CUSTOMER_CENTER = #{customer_center}, MODIFY_DT = now()
+		]]>	
+	</update>
+
+	<!-- 사업자 조회 -->
+	<select id="getBusinessInfo" resultMap="businessMap">
+		<![CDATA[
+			SELECT 	BUSINESS_NO, TELE_SELL, ADDRESS, CUSTOMER_CENTER, MODIFY_DT, CREATE_DT
+			FROM	BUSINESS_INFO A
+		]]>	
+	</select>
+	
+	<!-- 카테고리 번호 있는지 -->
+	<select id="getCategoryNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.CATEGORY_NO
+			FROM	CATEGORY A
+			ORDER BY A.CATEGORY_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 카테고리 등록 -->
+	<insert id="setCategoryReg" parameterType="categoryVO">
+		<![CDATA[
+			INSERT INTO CATEGORY( CATEGORY_NO,CATEGORY_NM,MODIFY_DT,CREATE_DT )
+			VALUES( #{category_no},#{category_nm},now(),now()  )
+		]]>	
+	</insert>
+
+	<!-- 카테고리 삭제 -->
+	<delete id="setCategoryDelete" parameterType="categoryVO">
+		<![CDATA[
+			DELETE
+			FROM 	CATEGORY
+			WHERE 	CATEGORY_NO = #{category_no}
+		]]>	
+	</delete>
+	
+	<!-- 카테고리 조회 -->
+	<select id="getCategoryList" resultMap="categoryMap">
+		<![CDATA[
+			SELECT 	A.CATEGORY_NO, A.CATEGORY_NM, A.MODIFY_DT, A.CREATE_DT
+  			FROM 	CATEGORY A
+			ORDER BY A.CATEGORY_NO
+		]]>		
+	</select>
+	
+	<!-- 품목 번호 있는지 -->
+	<select id="getItemNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.ITEM_NO
+			FROM	ITEM A
+			ORDER BY A.ITEM_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 품목 등록 -->
+	<insert id="setItemReg" parameterType="itemVO">
+		<![CDATA[
+			INSERT INTO ITEM( ITEM_NO,CATEGORY_NO,ITEM_NM,MODIFY_DT,CREATE_DT )
+			VALUES( #{item_no},#{category_no},#{item_nm},now(),now()  )
+		]]>	
+	</insert>
+
+	<!-- 품목 삭제 -->
+	<delete id="setItemDelete" parameterType="itemVO">
+		<![CDATA[
+			DELETE
+			FROM 	ITEM
+			WHERE 	ITEM_NO = #{item_no}
+		]]>	
+	</delete>
+	
+	<!-- 품목 조회 -->
+	<select id="getItemList" resultMap="itemMap">
+		<![CDATA[
+			SELECT 	A.ITEM_NO, A.CATEGORY_NO, A.ITEM_NM, A.MODIFY_DT, A.CREATE_DT
+  			FROM 	ITEM A
+			WHERE 	CATEGORY_NO = #{category_no}
+			ORDER BY A.ITEM_NO
+		]]>		
+	</select>
+	
+	<!-- 판매 스토어 번호 있는지 -->
+	<select id="getSellStoreNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.STORE_NO
+			FROM	SELL_STORE A
+			ORDER BY A.STORE_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 판매 스토어 등록 -->
+	<insert id="setSellStoreReg" parameterType="sellStoreVO">
+		<![CDATA[
+			INSERT INTO SELL_STORE( STORE_NO,STORE_NM,MODIFY_DT,CREATE_DT )
+			VALUES( #{store_no},#{store_nm},now(),now()  )
+		]]>	
+	</insert>
+
+	<!-- 판매 스토어 수정 -->
+	<update id="setSellStoreModify" parameterType="sellStoreVO">
+		<![CDATA[
+			UPDATE 	SELL_STORE
+			SET 	CHARGE = #{charge}, MODIFY_DT = now()
+			WHERE 	STORE_NO = #{store_no}
+		]]>	
+	</update>
+
+	<!-- 판매 스토어 삭제 -->
+	<delete id="setSellStoreDelete" parameterType="sellStoreVO">
+		<![CDATA[
+			DELETE
+			FROM 	SELL_STORE
+			WHERE 	STORE_NO = #{store_no}
+		]]>	
+	</delete>
+	
+	<!-- 판매 스토어 조회 -->
+	<select id="getSellStoreList" resultMap="sellStoreMap">
+		<![CDATA[
+			SELECT 	A.STORE_NO, A.STORE_NM, CHARGE, A.MODIFY_DT, A.CREATE_DT
+  			FROM 	SELL_STORE A
+			ORDER BY A.STORE_NO
+		]]>		
+	</select>
+
+	<!-- 택배사 수정 -->
+	<update id="setCourierCompanyModify" parameterType="courierCompanyVO">
+		<![CDATA[
+			UPDATE 	COURIER_COMPANY
+			SET 	FARE = #{fare}, MODIFY_DT = now()
+			WHERE 	COURIER_NO = #{courier_no}
+		]]>	
+	</update>
+	
+	<!-- 택배사 조회 -->
+	<select id="getCourierCompanyList" resultMap="courierCompanyMap ">
+		<![CDATA[
+			SELECT 	A.COURIER_NO, A.COURIER_NM, A.FARE, A.MODIFY_DT, A.CREATE_DT
+  			FROM 	COURIER_COMPANY A
+			ORDER BY A.COURIER_NO
+		]]>		
+	</select>
+</mapper>

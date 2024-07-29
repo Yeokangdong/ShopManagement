@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.OrderMapper">
+
+	<resultMap id="orderMap" type="kr.co.shop.vo.OrderVO">
+		<result property="order_no" column="order_no"/>
+		<result property="product_no" column="product_no"/>
+		<result property="option_no" column="option_no"/>
+		<result property="receive_nm" column="receive_nm"/>
+		<result property="receive_tel" column="receive_tel"/>
+		<result property="receive_tel_etc" column="receive_tel_etc"/>
+		<result property="receive_address" column="receive_address"/>
+		<result property="send_nm" column="send_nm"/>
+		<result property="send_tel" column="send_tel"/>
+		<result property="send_tel_etc" column="send_tel_etc"/>
+		<result property="send_address" column="send_address"/>
+		<result property="product_title" column="product_title"/>
+		<result property="box_cnt" column="box_cnt"/>
+		<result property="date_chk" column="date_chk"/>
+		<result property="first_dt" column="first_dt"/>
+		<result property="end_dt" column="end_dt"/>
+		<result property="start_num" column="start_num"/>
+		<result property="total_cnt" column="total_cnt"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 주문 번호 있는지 -->
+	<select id="getOrderNo" resultType="String">
+		<![CDATA[
+			SELECT 	A.ORDER_NO
+			FROM	HANGUNSIK_SYS.ORDER A
+			ORDER BY A.ORDER_NO DESC LIMIT 1
+		]]>			
+	</select>
+
+	<!-- 주문 등록 -->
+	<insert id="setOrderReg" parameterType="orderVo">
+		<![CDATA[
+			INSERT INTO HANGUNSIK_SYS.ORDER ( ORDER_NO,PRODUCT_NO,OPTION_NO,RECEIVE_NM,RECEIVE_TEL,RECEIVE_TEL_ETC,RECEIVE_ADDRESS,SEND_NM,SEND_TEL,SEND_TEL_ETC,SEND_ADDRESS,PRODUCT_TITLE,BOX_CNT,MESSAGE,MODIFY_DT,CREATE_DT )
+			VALUES ( #{order_no},#{product_no},#{option_no},#{receive_nm},#{receive_tel},#{receive_tel_etc},#{receive_address},#{send_nm},#{send_tel},#{send_tel_etc},#{send_address},#{product_title},#{box_cnt},#{message},now(),now()  )
+		]]>	
+	</insert>
+
+	<!-- 주문 취소 -->
+	<delete id="setOrderCancel" parameterType="java.util.Map">
+		<![CDATA[
+			INSERT INTO ORDER_CANCEL SELECT * FROM HANGUNSIK_SYS.ORDER WHERE ORDER_NO = #{order_no}
+		]]>
+	</delete>
+
+	<!-- 주문 삭제 -->
+	<delete id="setOrderDelete" parameterType="java.util.Map">
+		<![CDATA[
+			DELETE	
+			FROM	HANGUNSIK_SYS.ORDER
+		]]>	
+		<where>
+			<if test="order_no != null">
+				ORDER_NO = #{order_no}
+			</if>
+		</where>
+	</delete>
+	
+	<!-- 주문 총갯수 -->
+	<select id="getOrderTotalList" resultMap="orderMap">
+		<![CDATA[
+			SELECT 	A.ORDER_NO, A.PRODUCT_NO, A.OPTION_NO, A.RECEIVE_NM, A.RECEIVE_TEL, A.RECEIVE_TEL_ETC, A.RECEIVE_ADDRESS,
+					A.SEND_NM, A.SEND_TEL, A.SEND_TEL_ETC, A.SEND_ADDRESS, A.PRODUCT_TITLE, A.BOX_CNT, A.MESSAGE, A.MODIFY_DT, A.CREATE_DT
+			FROM	HANGUNSIK_SYS.ORDER A
+		]]>
+	</select>
+		
+	<!-- 주문 조회 -->
+	<select id="getOrderList" resultMap="orderMap" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT 	A.ORDER_NO, A.PRODUCT_NO, A.OPTION_NO, A.RECEIVE_NM, A.RECEIVE_TEL, A.RECEIVE_TEL_ETC, A.RECEIVE_ADDRESS,
+					A.SEND_NM, A.SEND_TEL, A.SEND_TEL_ETC, A.SEND_ADDRESS, A.PRODUCT_TITLE, A.BOX_CNT, A.MESSAGE, A.MODIFY_DT, A.CREATE_DT
+			FROM	HANGUNSIK_SYS.ORDER A
+		]]>
+		<where>
+			<if test="order_no != null">
+				A.ORDER_NO = #{order_no}
+			</if>
+			<if test="search_txt != ''">
+				<if test='search_type.equals("1")'>
+					A.ORDER_NO LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("2")'>
+					A.PRODUCT_TITLE LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("3")'>
+					A.CREATE_DT LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("4")'>
+					A.RECEIVE_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+				<if test='search_type.equals("5")'>
+					A.SEND_NM LIKE CONCAT('%',#{search_txt},'%')
+				</if>
+			</if>
+			<if test='date_chk.equals("Y")'>
+				A.CREATE_DT BETWEEN #{first_dt} AND #{end_dt}
+			</if>
+		</where>
+		<if test="start_num != undefined">
+			ORDER BY A.ORDER_NO LIMIT ${start_num}, 10
+		</if>	
+	</select>
+</mapper>

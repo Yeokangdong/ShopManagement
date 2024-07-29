@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.LoginMapper">
+
+	<resultMap id="loginMap" type="kr.co.shop.vo.LoginVO">
+		<result property="user_id" column="user_id"/>
+		<result property="user_password" column="user_password"/>
+		<result property="user_nm" column="user_nm"/>
+		<result property="email" column="email"/>
+		<result property="email_password" column="email_password"/>
+		<result property="phone_number" column="phone_number"/>
+		<result property="admin_yn" column="admin_yn"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+
+	<!-- 계정 정보 -->
+	<select id="getUserInfo" resultMap="loginMap">
+		SELECT 	USER_ID, USER_PASSWORD, ADMIN_YN, EMAIL, EMAIL_PASSWORD, PHONE_NUMBER, CREATE_DT
+		FROM	USERS A
+		WHERE	A.USER_ID = #{user_id}
+		AND		A.USER_PASSWORD = #{user_password}		
+	</select>
+</mapper>

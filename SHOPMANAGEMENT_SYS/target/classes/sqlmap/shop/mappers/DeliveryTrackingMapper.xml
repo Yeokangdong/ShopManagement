@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shop.service.impl.DeliveryTrackingMapper">
+
+	<resultMap id="deriveryTrackingMap" type="kr.co.shop.vo.DeliveryTrackingVO">
+		<result property="order_no" column="order_no"/>
+		<result property="product_no" column="product_no"/>
+		<result property="option_no" column="option_no"/>
+		<result property="receive_nm" column="receive_nm"/>
+		<result property="receive_tel" column="receive_tel"/>
+		<result property="receive_tel_etc" column="receive_tel_etc"/>
+		<result property="receive_address" column="receive_address"/>
+		<result property="send_nm" column="send_nm"/>
+		<result property="send_tel" column="send_tel"/>
+		<result property="send_tel_etc" column="send_tel_etc"/>
+		<result property="send_address" column="send_address"/>
+		<result property="product_title" column="product_title"/>
+		<result property="box_cnt" column="box_cnt"/>
+		<result property="songjang_no" column="songjang_no"/>
+		<result property="status_time" column="status_time"/>
+		<result property="status_loc" column="status_loc"/>
+		<result property="status" column="status"/>
+		<result property="modify_dt" column="modify_dt"/>
+		<result property="create_dt" column="create_dt"/>
+	</resultMap>
+	
+	<!-- 주문 목록 -->
+	<select id="getOrderHisInfo" resultMap="deriveryTrackingMap" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT 	A.ORDER_NO, A.PRODUCT_NO, A.OPTION_NO, A.RECEIVE_NM, A.RECEIVE_TEL, A.RECEIVE_TEL_ETC, A.RECEIVE_ADDRESS,
+					A.SEND_NM, A.SEND_TEL, A.SEND_TEL_ETC, A.SEND_ADDRESS, A.PRODUCT_TITLE, A.BOX_CNT, A.MESSAGE, A.SONGJANG_NO, 
+					A.SELL_STORE, A.STATUS_TIME, A.STATUS_LOC, A.STATUS, A.MODIFY_DT, A.CREATE_DT
+			FROM	ORDER_HIS A
+			WHERE	A.SONGJANG_NO = #{songjang_no}
+		]]>
+	</select>
+</mapper>
