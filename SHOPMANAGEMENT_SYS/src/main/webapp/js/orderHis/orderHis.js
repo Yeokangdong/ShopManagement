@@ -3,6 +3,51 @@ $(document).ready(function() {
 	getOrderHisList();
 });
 
+//주문 파일 다이얼로그
+var files;
+function orderHisReg(){
+	document.getElementById("orderHisFileIp").click();
+	$("#orderHisFileIp").on("change", function (evt) {
+		files = evt.target.files[0];
+		
+		var file_name = files.name;
+		var extension = file_name.substr(file_name.length - 4);
+		
+		if(extension != "xlsx"){
+			infoShow("엑셀파일(xlsx)을 입력하십시오.");
+			return;
+		}else{
+			setOrderHisReg();	
+		}
+	});
+}
+
+//주문 등록
+function setOrderHisReg(){
+	
+	loadingDataShow();
+	
+	var formData = new FormData();
+  	formData.append("files", files);
+  	
+  	resultAjaxFileAccess("setOrderHisReg.do", formData).done(function (results){
+		if(results != null){
+			if(results.message == "success"){
+				getOrderHisList();
+				
+				LoadingDataHide();
+				infoShow("주문이 등록되었습니다.");
+			}else{
+				LoadingDataHide();
+				errorShow(results.error);
+			}
+		}else{
+			LoadingDataHide();
+			errorShow(results.error);
+		}
+	});
+}
+
 //주문 삭제
 function setOrderHisDelete(order_no){
 	

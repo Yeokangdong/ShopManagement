@@ -45,6 +45,14 @@ public interface ProductService {
 	 * @exception Exception
 	 */
 	List<?> getLastProductList() throws Exception;
+
+	/**
+	 * 제조업체 목록
+	 * @param productVO - 조회할 정보가 담긴 VO
+	 * @return 제조업체 목록 
+	 * @exception Exception
+	 */
+	List<?> getMakeCompanyList() throws Exception;
 	
 	/**
 	 * 상품 등록
@@ -53,4 +61,13 @@ public interface ProductService {
 	 * @exception Exception
 	 */
 	void setProductReg(ProductVO productVO) throws Exception;
+	
+
+	/**
+	 * 상품 정보
+	 * @param productVO - 조회할 정보가 담긴 VO
+	 * @return 상품 정보
+	 * @exception Exception
+	 */
+	List<?> getProductInfo(Map<String, Object> paramMap) throws Exception;
 }

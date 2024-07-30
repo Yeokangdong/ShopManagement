@@ -6,10 +6,15 @@
 		<result property="product_no" column="product_no"/>
 		<result property="category_no" column="category_no"/>
 		<result property="item_no" column="item_no"/>
+		<result property="company_no" column="company_no"/>
 		<result property="store_no" column="store_no"/>
 		<result property="courier_no" column="courier_no"/>
+		<result property="company_nm" column="company_nm"/>
 		<result property="tax" column="tax"/>
-		<result property="brand_title" column="brand_title"/>
+		<result property="product_title" column="product_title"/>
+		<result property="inventory" column="inventory"/>
+		<result property="origin" column="origin"/>
+		<result property="origin_title" column="origin_title"/>
 	</resultMap>
 	
 	<!-- 상품 번호 있는지 -->
@@ -24,17 +29,37 @@
 	<!-- 최근 등록한 상품 -->
 	<select id="getLastProductList" resultMap="productMap">
 		<![CDATA[
-			SELECT 	A.PRODUCT_NO, A.BRAND_TITLE
+			SELECT 	A.PRODUCT_NO, A.PRODUCT_TITLE
 			FROM	PRODUCT A
 			ORDER BY A.PRODUCT_NO DESC LIMIT 3
+		]]>			
+	</select>
+	
+	<!-- 제조업체 -->
+	<select id="getMakeCompanyList" resultMap="productMap">
+		<![CDATA[
+			SELECT 	A.COMPANY_NO, A.COMPANY_NM
+			FROM	COMPANY A
+			WHERE	A.COMPANY_TYPE = '1'
+			ORDER BY A.COMPANY_NO DESC LIMIT 3
 		]]>			
 	</select>
 
 	<!-- 상품 등록 -->
 	<insert id="setProductReg" parameterType="productVO">
 		<![CDATA[
-			INSERT INTO PRODUCT( PRODUCT_NO,CATEGORY_NO,ITEM_NO,STORE_NO,COURIER_NO,TAX,BRAND_TITLE,MODIFY_DT,CREATE_DT )
-			VALUES( #{product_no},#{category_no},#{item_no},#{store_no},#{courier_no},#{tax},#{brand_title},now(),now()  )
+			INSERT INTO PRODUCT( PRODUCT_NO,CATEGORY_NO,ITEM_NO,COMPANY_NO,STORE_NO,COURIER_NO,TAX,PRODUCT_TITLE,INVENTORY,ORIGIN,ORIGIN_TITLE,MODIFY_DT,CREATE_DT )
+			VALUES( #{product_no},#{category_no},#{item_no},#{company_no},#{store_no},#{courier_no},#{tax},#{product_title},#{inventory},#{origin},#{origin_title},now(),now()  )
 		]]>	
 	</insert>
+	
+	<!-- 상품 정보 -->
+	<select id="getProductInfo" resultMap="productMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 	A.PRODUCT_NO, A.CATEGORY_NO, A.ITEM_NO, A.COMPANY_NO, A.STORE_NO, A.COURIER_NO, A.TAX, A.PRODUCT_TITLE, A.INVENTORY, A.ORIGIN, A.ORIGIN_TITLE,
+       				A.MODIFY_DT, A.CREATE_DT
+  			FROM 	PRODUCT A
+  			WHERE	A.PRODUCT_NO = #{product_no}
+		]]>			
+	</select>
 </mapper>

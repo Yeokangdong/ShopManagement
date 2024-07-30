@@ -16,6 +16,8 @@
 package kr.co.shop.service.impl;
 
 import java.util.List;
+import java.util.Map;
+
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -64,6 +66,16 @@ public class ProducterviceImpl extends EgovAbstractServiceImpl implements Produc
 	/**
 	 * 최근 등록한 상품 목록
 	 * @param productVO - 조회할 정보가 담긴 VO
+	 * @return 제조업체 목록
+	 * @exception Exception
+	 */
+	public List<?> getMakeCompanyList() throws Exception {
+		return productMapper.getMakeCompanyList();
+	}
+
+	/**
+	 * 제조업체 목록
+	 * @param productVO - 조회할 정보가 담긴 VO
 	 * @return 최근 등록한 상품 목록 
 	 * @exception Exception
 	 */
@@ -80,5 +92,15 @@ public class ProducterviceImpl extends EgovAbstractServiceImpl implements Produc
 	@Override
 	public void setProductReg(ProductVO productVO) throws Exception {
 		productMapper.setProductReg(productVO);
+	}
+
+	/**
+	 * 상품 정보
+	 * @param productVO - 조회할 정보가 담긴 VO
+	 * @return 상품 정보 
+	 * @exception Exception
+	 */
+	public List<?> getProductInfo(Map<String, Object> paramMap) throws Exception {
+		return productMapper.getProductInfo(paramMap);
 	}
 }

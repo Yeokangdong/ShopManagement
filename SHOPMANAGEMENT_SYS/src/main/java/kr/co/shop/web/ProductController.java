@@ -48,13 +48,39 @@ public class ProductController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getLastProductList.do", method = {RequestMethod.POST}, produces = "application/text; charset=utf8")
-	public @ResponseBody String getLastProductList(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public @ResponseBody String getLastProductList(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		JSONObject obj = new JSONObject();
 		
 		try{
 			
 			List<ProductVO> returnList = (List<ProductVO>) productService.getLastProductList();
+			
+			obj.put("returnList", returnList);
+			obj.put("message", "success");
+		}catch(Exception error){
+			obj.put("message", "fail");
+			obj.put("error", error.getMessage().toString());
+		}
+		
+		return obj.toString();
+    }
+	
+	/**
+	 * 제조업체 목록
+	 * @param model
+	 * @return 
+	 * @exception Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getMakeCompanyList.do", method = {RequestMethod.POST}, produces = "application/text; charset=utf8")
+	public @ResponseBody String getMakeCompanyList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		JSONObject obj = new JSONObject();
+		
+		try{
+			
+			List<ProductVO> returnList = (List<ProductVO>) productService.getMakeCompanyList();
 			
 			obj.put("returnList", returnList);
 			obj.put("message", "success");
@@ -81,8 +107,12 @@ public class ProductController {
 		productVO = new ProductVO();
 		productVO.setCategory_no(paramMap.get("category_no").toString());
 		productVO.setItem_no(paramMap.get("item_no").toString());
+		productVO.setCompany_no(paramMap.get("company_no").toString());
 		productVO.setTax(paramMap.get("tax").toString());
-		productVO.setBrand_title(paramMap.get("brand_title").toString());
+		productVO.setProduct_title(paramMap.get("product_title").toString());
+		productVO.setInventory(paramMap.get("inventory").toString());
+		productVO.setOrigin(paramMap.get("origin").toString());
+		productVO.setOrigin_title(paramMap.get("origin_title").toString());
 		
 		JSONObject obj = new JSONObject();
 		
@@ -138,4 +168,34 @@ public class ProductController {
 		
 		return obj.toString();
 	}
+
+	/**
+	 * 제조업체 목록
+	 * @param model
+	 * @return 
+	 * @exception Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getProductInfo.do", method = {RequestMethod.POST}, produces = "application/text; charset=utf8")
+	public @ResponseBody String getProductInfo(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		for (String id: paramMap.keySet()) {
+			paramMap.put(id, paramMap.get(id));
+        }
+		
+		JSONObject obj = new JSONObject();
+		
+		try{
+			
+			List<ProductVO> returnList = (List<ProductVO>) productService.getProductInfo(paramMap);
+			
+			obj.put("returnList", returnList);
+			obj.put("message", "success");
+		}catch(Exception error){
+			obj.put("message", "fail");
+			obj.put("error", error.getMessage().toString());
+		}
+		
+		return obj.toString();
+    }
 }

@@ -89,7 +89,7 @@
 				A.CREATE_DT BETWEEN #{first_dt} AND #{end_dt}
 			</if>
 		</where>
-		ORDER BY A.ORDER_NO LIMIT ${start_num}, 10	
+		ORDER BY A.CREATE_DT LIMIT ${start_num}, 10	
 	</select>
 
 	<!-- 주문 삭제 -->
