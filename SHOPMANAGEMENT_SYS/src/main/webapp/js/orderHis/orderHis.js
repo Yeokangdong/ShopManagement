@@ -125,7 +125,7 @@ function getOrderHisList(start_num){
 															'	<i class="fa fa-registered"></i>' +
 															'</button>' +
 														'</div>' +
-														'<select id="courierCompanySel" style="width: 100%; height: 25px;" onchange="javascript:courierCompany();"></select>' +
+														'<select id="sellStoreSel' + key + '" style="width: 100%; height: 25px; color: chartreuse;"></select>' +
 													'</div>' +
 												'</div>' +
 											'</p>' +
@@ -187,6 +187,40 @@ function getOrderHisList(start_num){
 				
 				$("#orderHisUl").append(html);
 				
+				getSellStoreList();
+				
+			}else{
+				errorShow(results.error);
+			}
+		}else{
+			errorShow(results.error);
+		}
+	});
+}
+
+//스토어
+function getSellStoreList(){
+	
+	resultAjaxAccess("getSellStoreList.do").done(function (results){
+		if(results != null){
+			if(results.message == "success"){
+				
+				var returnList = results.returnList;
+						
+				//목록 초기화
+				$("#sellStoreSel").empty();
+					
+				if(returnList.length > 0){
+							
+					$.each(resultOrderHisList, function(key1, value){
+						
+						$("#sellStoreSel" + key1).append('<option value="000">외주 판매</option>');
+						$.each(returnList, function(key2, value){
+						
+							$("#sellStoreSel" + key1).append('<option value="' + value.store_no + '">' + value.store_nm + '</option>');
+						});
+					});	
+				}
 			}else{
 				errorShow(results.error);
 			}

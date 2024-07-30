@@ -26,6 +26,7 @@ function getCompanyNoList(){
 				$("#companyNmSel").empty();
 					
 				if(returnList.length > 0){
+					
 					$.each(returnList, function(key, value){
 						$("#companyNmSel").append('<option value="' + value.company_no + '">' + value.company_nm + '</option>')
 					});
