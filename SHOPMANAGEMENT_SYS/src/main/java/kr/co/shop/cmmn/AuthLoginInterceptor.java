@@ -27,7 +27,7 @@ public class AuthLoginInterceptor extends HandlerInterceptorAdapter{
 			response.sendRedirect("./index.do");
 			return false;
 		}
-   
+
 		try {
 			//admin이라는 세션key를 가진 정보가 있으면 admin페이지로 이동
 			if(session.getAttribute("admin") !=null ){
